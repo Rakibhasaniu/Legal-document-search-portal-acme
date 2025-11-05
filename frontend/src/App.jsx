@@ -13,7 +13,7 @@ function App() {
       <header className="app-header">
         <div className="header-content">
           <h1 className="app-title">Legal Document Search Portal</h1>
-          <p className="app-subtitle">AI-Powered Legal Assistant</p>
+        
         </div>
       </header>
 

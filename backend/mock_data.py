@@ -75,7 +75,7 @@ Receiving Party agrees to:
 - Not disclose Confidential Information to third parties without written consent
 - Use Confidential Information solely for the purpose of evaluating the potential business relationship
 - Protect Confidential Information with the same degree of care used for its own confidential information, but no less than reasonable care
-- Limit access to Confidential Information to employees with a need to know
+- Limit access to Confidential Information to authorized personnel with a need to know
 
 3. EXCLUSIONS
 Confidential Information does not include information that:
