@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSearchResults, setQuery, clearResults } from '../store/searchSlice';
 import { useDebounce } from '../hooks/useDebounce';
@@ -8,13 +8,34 @@ const SearchBar = () => {
   const { query, loading } = useSelector((state) => state.search);
   const [localQuery, setLocalQuery] = useState(query);
   const debouncedQuery = useDebounce(localQuery, 800);
+  const skipDebounceRef = useRef(false);
+
+  // Sync local query with Redux query when it changes externally (e.g., from suggestions)
+  useEffect(() => {
+    if (query !== localQuery && query !== debouncedQuery) {
+      setLocalQuery(query);
+      // Mark that we should skip the debounced search since we're doing immediate search
+      skipDebounceRef.current = true;
+      // Trigger immediate search for suggestion clicks (bypassing debounce)
+      if (query.length >= 3) {
+        dispatch(fetchSearchResults({ query, maxResults: 10 }));
+      }
+    }
+  }, [query]);
 
   useEffect(() => {
+    // Skip if we just did an immediate search from suggestion click
+    if (skipDebounceRef.current) {
+      skipDebounceRef.current = false;
+      return;
+    }
+
     if (debouncedQuery.trim() && debouncedQuery.trim().length >= 3) {
       dispatch(setQuery(debouncedQuery));
       dispatch(fetchSearchResults({ query: debouncedQuery, maxResults: 10 }));
     } else if (!debouncedQuery.trim()) {
-      dispatch(clearResults());
+      // Just update the query, don't clear results to avoid page "reload" effect
+      dispatch(setQuery(''));
     }
   }, [debouncedQuery, dispatch]);
 

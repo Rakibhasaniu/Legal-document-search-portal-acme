@@ -1,9 +1,22 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSearchResults, setQuery } from '../store/searchSlice';
 
 const ResultsDisplay = () => {
+  const dispatch = useDispatch();
   const { results, summary, documentsFound, processingTime, hasSearched } = useSelector(
     (state) => state.search
   );
+
+  const searchSuggestions = [
+    'employment',
+    'confidential',
+    'subscription',
+    'termination'
+  ];
+
+  const handleSuggestionClick = (suggestion) => {
+    dispatch(setQuery(suggestion));
+  };
 
   if (!hasSearched) {
     return (
@@ -14,10 +27,14 @@ const ResultsDisplay = () => {
         <div className="suggestions">
           <p className="suggestions-title">Try searching for:</p>
           <ul>
-            <li>employment termination</li>
-            <li>confidential information</li>
-            <li>intellectual property</li>
-            <li>subscription payment</li>
+            {searchSuggestions.map((suggestion, index) => (
+              <li
+                key={index}
+                onClick={() => handleSuggestionClick(suggestion)}
+              >
+                {suggestion}
+              </li>
+            ))}
           </ul>
         </div>
       </div>
